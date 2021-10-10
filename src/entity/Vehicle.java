@@ -5,16 +5,25 @@ import entity.enums.Color;
 import entity.enums.TypeOfVehicle;
 
 public class Vehicle {
+    private int id ;
     private String licensePlate;
     private TypeOfVehicle typeOfVehicle;
     private CarModel model ;
     private Color color ;
 
-    public Vehicle(String licensePlate, TypeOfVehicle typeOfVehicle, CarModel model, Color color) {
+    public Vehicle() {
+    }
+
+    public Vehicle(int id , String licensePlate, TypeOfVehicle typeOfVehicle, CarModel model, Color color) {
+        this.id =id;
         this.licensePlate = licensePlate;
         this.typeOfVehicle = typeOfVehicle;
         this.model = model;
         this.color = color;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getLicensePlate() {
@@ -31,5 +40,25 @@ public class Vehicle {
 
     public Color getColor() {
         return color;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public void setTypeOfVehicle(TypeOfVehicle typeOfVehicle) {
+        this.typeOfVehicle = typeOfVehicle;
+    }
+
+    public void setModel(CarModel model) {
+        this.model = model;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

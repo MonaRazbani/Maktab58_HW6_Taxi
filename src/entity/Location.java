@@ -3,6 +3,10 @@ package entity;
 public class Location {
     String Coordinates;
 
+    public Location(String coordinates) {
+        Coordinates = coordinates;
+    }
+
     public String getCoordinates() {
         return Coordinates;
     }
