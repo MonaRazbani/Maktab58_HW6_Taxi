@@ -12,8 +12,9 @@ public class Main {
                 "3.Driver signup or login \n" +
                 "4.Passenger signup or login \n" +
                 "5.Show a list of drivers \n" +
-                "6.Show a list of passengers\n"+
-                "7.new trip :");
+                "6.Show a list of passengers\n"
+                );
+
         Scanner scanner = new Scanner(System.in);
             int type = scanner.nextInt();
             switch (type) {
@@ -53,11 +54,13 @@ public class Main {
                 }
                 case 5: {
                     System.out.println(manager.getDriverDao().display());
+                    break ;
                 }
 
                 case 6: {
 
                     System.out.println(manager.getPassengerDao().display());
+                    break ;
                 }
                 default: {
                     break outer;

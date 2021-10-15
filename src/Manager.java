@@ -69,7 +69,7 @@ public class Manager<list> {
             case 1: {
                 Trip trip = tripDao.findByDriverNationalCode(nationalCode);
                 System.out.println(trip.getTripStatus() + "\n" + trip);
-                System.out.println("1: confirm receipt of cash \n2:finish trip \n 3:exit \n ");
+                System.out.println("\n 1: confirm receipt of cash \n2:finish trip \n3:exit \n ");
                 int newType = scanner.nextInt();
                 switch (newType) {
                     case 1: {
@@ -193,7 +193,7 @@ public class Manager<list> {
                 break;
             }
             case 2: {
-                System.out.println("1:ask trip with cash payment \n2:ask trip payment from wallet \n3:increase wallet inventory ");
+                System.out.println("\n1:ask trip with cash payment \n2:ask trip payment from wallet \n3:increase wallet inventory ");
                 int newType = scanner.nextInt();
                 switch (newType) {
                     case 1: {

@@ -130,12 +130,12 @@ public class PassengerDataBaseAccess extends DataBaseAccess{
                         Passenger passenger =new Passenger();
                         passenger.setFirstName(resultSet.getString("first_name"));
                         passenger.setLastName(resultSet.getString("last_name"));
-                        passenger.setUserName(resultSet.getString("user_name"));
+                        passenger.setUserName(resultSet.getString("username"));
                         passenger.setPassword(resultSet.getString("password"));
                         passenger.setNationalCode(resultSet.getString("national_code"));
                         Gender gender = Gender.valueOf(resultSet.getString("gender"));
                         passenger.setGender(gender);
-                        passenger.setPhoneNumber(resultSet.getString("phone_number"));
+                        passenger.setPhoneNumber(resultSet.getString("phone"));
                         passenger.setTripStatus(TripStatusPassenger.valueOf(resultSet.getString("tripstatus")));
                         passenger.setWallet(resultSet.getDouble("wallet"));
                         int locationId = resultSet.getInt("location");
