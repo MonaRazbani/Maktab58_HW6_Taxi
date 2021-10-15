@@ -12,10 +12,10 @@ public class Person {
     private String phoneNumber ;
     private Location liveLocation;
     private Gender gender;
-    private int id ;
 
-    public Person(int id , String firstName, String lastName, String userName, String password, String nationalCode, String phoneNumber, Location liveLocation, Gender gender) {
-        this.id = id ;
+
+    public Person( String firstName, String lastName, String userName, String password, String nationalCode, String phoneNumber, Location liveLocation, Gender gender) {
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -27,9 +27,10 @@ public class Person {
         this.gender = gender;
     }
 
-    public int getId() {
-        return id;
+    public Person() {
+
     }
+
 
     public String getFirstName() {
         return firstName;
@@ -63,9 +64,6 @@ public class Person {
         this.gender = gender;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getLastName() {
         return lastName;
@@ -103,12 +101,24 @@ public class Person {
     }
 
     public boolean checkingPassword(String userName , String password ){
-        if (userName ==getUserName()){
-            if (password== getPassword()){
+        if (getUserName().equals(userName)){
+            if (getPassword().equals(password)){
                 return true ;
             };
         }
 
         return false ;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", nationalCode='" + nationalCode + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", gender=" + gender;
     }
 }

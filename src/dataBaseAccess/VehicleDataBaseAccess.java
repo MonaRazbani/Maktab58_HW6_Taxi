@@ -19,8 +19,8 @@ public class VehicleDataBaseAccess extends DataBaseAccess {
     public int save(Vehicle vehicle) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            String sqlQuery = String.format("INSERT INTO vehicle ( idvehicle, Type_of_vehicle, color, model, license_plate) VALUES('%d','%s','%s','%s') ",
-                                            vehicle.getId(),vehicle.getTypeOfVehicle(),vehicle.getColor(),vehicle.getModel(),vehicle.getLicensePlate()) ;
+            String sqlQuery = String.format("INSERT INTO `vehicle` ( `Type_of_vehicle`,`color`, `model`, `license_plate`) VALUES('%s','%s','%s','%s') ",
+                    vehicle.getTypeOfVehicle(), vehicle.getColor(), vehicle.getModel(), vehicle.getLicensePlate());
 
             int i = statement.executeUpdate(sqlQuery);
             return i;
@@ -28,17 +28,34 @@ public class VehicleDataBaseAccess extends DataBaseAccess {
             return 0;
         }
     }
-    public Vehicle findVehicleById (int id ) throws SQLException {
-        if (getConnection()!=null){
+
+    public Vehicle findVehicleById(int id) throws SQLException {
+        if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet =statement.executeQuery(String.format("SELECT * from vehicle where id = '%d '"+ id));
+            ResultSet resultSet = statement.executeQuery(String.format("SELECT * from vehicle where id = '%d '" + id));
             TypeOfVehicle typeOfVehicle = TypeOfVehicle.valueOf(resultSet.getString(2));
-            Color color= Color.valueOf(resultSet.getString(3));
+            Color color = Color.valueOf(resultSet.getString(3));
             CarModel carModel = CarModel.valueOf(resultSet.getString(4));
             String licensePlate = resultSet.getString(5);
-            Vehicle found = new Vehicle(id,licensePlate,typeOfVehicle,carModel,color);
+            Vehicle found = new Vehicle(licensePlate, typeOfVehicle, carModel, color);
             return found;
         }
         return null;
+    }
+
+    public int findVehicleID(Vehicle vehicle) throws SQLException {
+        int id = -1;
+        if (getConnection() != null) {
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(String.format("select `idvehicle` from `vehicle` WHERE `Type_of_vehicle`= '%s' AND `color`='%s' AND `model`='%s' AND `license_plate`='%s'" ,
+                    vehicle.getTypeOfVehicle(), vehicle.getColor(), vehicle.getModel(),vehicle.getLicensePlate()));
+
+           while (resultSet.next()){
+               id = resultSet.getInt(1);
+           }
+        }
+        else
+            System.out.println("searching fail ");
+        return id;
     }
 }

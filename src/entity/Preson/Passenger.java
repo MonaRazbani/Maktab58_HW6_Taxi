@@ -1,19 +1,37 @@
 package entity.Preson;
 
 import entity.Location;
-import entity.Vehicle;
 import entity.enums.Gender;
+import entity.enums.TripStatusDriver;
+import entity.enums.TripStatusPassenger;
 
 import java.util.ArrayList;
 import java.util.List;
 public class Passenger<list> extends Person{
-    private double wallet ;
+    private double wallet=0 ;
     private List<Location> savedLocation =new ArrayList<>();
-    private boolean tripStatus ;
-    public Passenger(int id , String firstName, String lastName, String userName, String password, String nationalCode, String phoneNumber, Location liveLocation, Gender gender) {
-        super(id, firstName, lastName, userName, password, nationalCode, phoneNumber, liveLocation, gender);
-        this.wallet = 0;
-        this.tripStatus =false;
+    private TripStatusPassenger tripStatus ;
+    public Passenger(String firstName, String lastName, String userName, String password, String nationalCode, String phoneNumber, Location liveLocation, Gender gender,double wallet,TripStatusPassenger tripStatus) {
+        super(firstName, lastName, userName, password, nationalCode, phoneNumber, liveLocation, gender);
+        this.wallet=wallet;
+        this.tripStatus =tripStatus;
+
+    }
+
+    public void setWallet(double wallet) {
+        this.wallet = wallet;
+    }
+
+    public void setSavedLocation(List<Location> savedLocation) {
+        this.savedLocation = savedLocation;
+    }
+
+    public TripStatusPassenger getTripStatus() {
+        return tripStatus;
+    }
+
+    public void setTripStatus(TripStatusPassenger tripStatus) {
+        this.tripStatus = tripStatus;
     }
 
     public double getWallet() {
@@ -24,7 +42,12 @@ public class Passenger<list> extends Person{
         return savedLocation;
     }
 
-    public boolean isTripStatus() {
-        return tripStatus;
+
+    @Override
+    public String toString() {
+        return  getFirstName() +
+                getLastName()+
+                "wallet : " + wallet +
+                ", tripStatusDriver:"+getTripStatus() ;
     }
 }

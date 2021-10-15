@@ -1,17 +1,30 @@
 package entity;
 
 public class Location {
-    String Coordinates;
+    private String width;
+    private String length;
 
-    public Location(String coordinates) {
-        Coordinates = coordinates;
+    public Location() {
     }
 
-    public String getCoordinates() {
-        return Coordinates;
+    public Location(String width, String length) {
+        this.width = width;
+        this.length = length;
     }
 
-    public void setCoordinates(String coordinates) {
-        Coordinates = coordinates;
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
     }
 }
