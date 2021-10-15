@@ -38,34 +38,34 @@ public class DriverDataBaseAccess extends DataBaseAccess {
     }
 
     public Driver findDriverByNationalCode (String nationalCode ) throws SQLException {
-        if (getConnection()!=null){
+        if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(String.format("SELECT * FROM `driver` where `national_code` = '%s')",nationalCode));
-            //iddriver, first_name, last_name, username, national_code, password, gender, phone, location, vehicle_fk, tripsatus,
-                String firstName =resultSet.getString(2);
+            ResultSet resultSet = statement.executeQuery(String.format("SELECT * FROM `driver` where `national_code` = '%s'", nationalCode));
+            if (resultSet.next()) {
+                //iddriver, first_name, last_name, username, national_code, password, gender, phone, location, vehicle_fk, tripsatus,
+                String firstName = resultSet.getString(2);
                 String lastName = resultSet.getString(3);
                 String userName = resultSet.getString(4);
                 String password = resultSet.getString(6);
                 Gender gender = Gender.valueOf(resultSet.getString("gender"));
-                String phoneNumber= resultSet.getString("phone");
-                int locationId  = resultSet.getInt("location");
-                Location location =locationDao.findById(locationId);
+                String phoneNumber = resultSet.getString("phone");
+                int locationId = resultSet.getInt("location");
+                Location location = locationDao.findById(locationId);
                 int vehicleId = resultSet.getInt("vehicle_fk");
                 String tripSatus = resultSet.getString("tripstatus");
-                Vehicle vehicle= vehicleDao.findVehicleById(vehicleId);
-                TripStatusDriver tripStatusDriver=TripStatusDriver.valueOf(tripSatus);
-                Driver found = new Driver(firstName,lastName,userName,password,nationalCode,phoneNumber, location, gender,vehicle,tripStatusDriver);
-            return found ;
-
+                Vehicle vehicle = vehicleDao.findVehicleById(vehicleId);
+                TripStatusDriver tripStatusDriver = TripStatusDriver.valueOf(tripSatus);
+                Driver found = new Driver(firstName, lastName, userName, password, nationalCode, phoneNumber, location, gender, vehicle, tripStatusDriver);
+                return found;
+            }
         }
-        else return null;
-
+         return null;
     }
 
     public Driver findDriverById (int id ) throws SQLException {
         if (getConnection()!=null){
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(String.format("select * from `driver` where `id` = '%d'", id));
+            ResultSet resultSet = statement.executeQuery(String.format("select * from `driver` where `iddriver` = '%d'", id));
             if (resultSet.next()){
                 String firstName =resultSet.getString(2);
                 String lastName = resultSet.getString(3);
@@ -91,7 +91,8 @@ public class DriverDataBaseAccess extends DataBaseAccess {
         int driverId = -1 ;
         if (getConnection()!=null) {
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(String.format("select `id` from `driver` where `national_code` = '%s')", driver.getNationalCode()));
+            ResultSet resultSet = statement.executeQuery(String.format("select `iddriver` from `driver` where `national_code` = '%s'", driver.getNationalCode()));
+           if(resultSet.next())
             driverId = resultSet.getInt(1);
         }
         return driverId;
@@ -112,42 +113,66 @@ public class DriverDataBaseAccess extends DataBaseAccess {
     public boolean updateTripStatus (TripStatusDriver newTripStatusDriver,int  driverId ) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            int i = statement.executeUpdate(String.format("UPDATE `driver` SET `triptatus`  = '%s' WHERE `iddriver`  = '%d' ",newTripStatusDriver,driverId));
+            int i = statement.executeUpdate(String.format("UPDATE `driver` SET `tripstatus`  = '%s' WHERE `iddriver`  = '%d' ",newTripStatusDriver,driverId));
             if (i==1 ){
                 return  true ;
             }
         }
         return false;
     }
-
-    public List<Driver> display() throws SQLException {
+    public List<Driver> FindDriverWaitForTrip() throws SQLException {
+        List<Driver> driverList = new ArrayList<>();
         if (getConnection() != null) {
-            List<Driver> driverList = new ArrayList<>();
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("select * from `driver`where `tripstatus`='WAIT_For_Trip'");
+            while (resultSet.next()) {
+                Driver driver =new Driver();
+                driver.setFirstName(resultSet.getString("first_name"));
+                driver.setLastName(resultSet.getString("last_name"));
+                driver.setUserName(resultSet.getString("username"));
+                driver.setNationalCode(resultSet.getString("national_code"));
+                driver.setPassword(resultSet.getString("password"));
+                driver.setPhoneNumber(resultSet.getString("phone"));
+                int locationId = resultSet.getInt("location");
+                Gender gender = Gender.valueOf(resultSet.getString("gender"));
+                driver.setGender(gender);
+                driver.setGender(gender);
+                int vehicleId = resultSet.getInt("vehicle_fk");
+                driver.setVehicle(vehicleDao.findVehicleById(vehicleId));
+                driver.setLiveLocation(locationDao.findById(locationId));
+                driverList.add(driver);
+            }
+            return driverList ;
+        }
+        else return Collections.emptyList();
+
+    }
+    public List<Driver> display() throws SQLException {
+        List<Driver> driverList = new ArrayList<>();
+        if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from `driver`");
             while (resultSet.next()) {
-                for (Driver driver : driverList) {
-                    driver.setFirstName(resultSet.getString(2));
-                    driver.setLastName(resultSet.getString(3));
-                    driver.setUserName(resultSet.getString(4));
-                    driver.setNationalCode(resultSet.getString(5));
-                    driver.setPassword(resultSet.getString(6));
-                    driver.setPhoneNumber(resultSet.getString(7));
-                    int locationId = resultSet.getInt(8);
-                    Gender gender = Gender.valueOf(resultSet.getString(9));
+                    Driver driver =new Driver();
+                    driver.setFirstName(resultSet.getString("first_name"));
+                    driver.setLastName(resultSet.getString("last_name"));
+                    driver.setUserName(resultSet.getString("username"));
+                    driver.setNationalCode(resultSet.getString("national_code"));
+                    driver.setPassword(resultSet.getString("password"));
+                    driver.setPhoneNumber(resultSet.getString("phone"));
+                    int locationId = resultSet.getInt("location");
+                    Gender gender = Gender.valueOf(resultSet.getString("gender"));
                     driver.setGender(gender);
                     driver.setGender(gender);
-                    int vehicleId = resultSet.getInt(10);
+                    int vehicleId = resultSet.getInt("vehicle_fk");
                     driver.setVehicle(vehicleDao.findVehicleById(vehicleId));
                     driver.setLiveLocation(locationDao.findById(locationId));
                     driverList.add(driver);
                 }
-            }
-            return driverList;
+            return driverList ;
         }
-        else {
-            return Collections.emptyList();
-        }
+        else return Collections.emptyList();
+
     }
 
 }

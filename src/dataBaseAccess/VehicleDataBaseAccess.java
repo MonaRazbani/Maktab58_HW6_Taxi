@@ -32,13 +32,15 @@ public class VehicleDataBaseAccess extends DataBaseAccess {
     public Vehicle findVehicleById(int id) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(String.format("SELECT * from vehicle where id = '%d '" + id));
-            TypeOfVehicle typeOfVehicle = TypeOfVehicle.valueOf(resultSet.getString(2));
-            Color color = Color.valueOf(resultSet.getString(3));
-            CarModel carModel = CarModel.valueOf(resultSet.getString(4));
-            String licensePlate = resultSet.getString(5);
-            Vehicle found = new Vehicle(licensePlate, typeOfVehicle, carModel, color);
-            return found;
+            ResultSet resultSet = statement.executeQuery(String.format("SELECT * from `vehicle` where `idvehicle` = '%d'" ,id));
+            if (resultSet.next()) {
+                TypeOfVehicle typeOfVehicle = TypeOfVehicle.valueOf(resultSet.getString(2));
+                Color color = Color.valueOf(resultSet.getString(3));
+                CarModel carModel = CarModel.valueOf(resultSet.getString(4));
+                String licensePlate = resultSet.getString(5);
+                Vehicle found = new Vehicle(licensePlate, typeOfVehicle, carModel, color);
+                return found;
+            }
         }
         return null;
     }

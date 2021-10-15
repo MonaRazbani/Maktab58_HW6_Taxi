@@ -51,12 +51,10 @@ public class Manager<list> {
             if (driverLogin.checkingPassword(nationalCode, password)) {
                 {
                     System.out.println(" Hi Dear  " + driverLogin.getFirstName() + " " + driverLogin.getLastName());
-                    if (driverLogin.getTripStatusDriver().equals("ON_TRIP"))
+                    if (driverLogin.getTripStatusDriver().equals(TripStatusDriver.ON_TRIP))
                         return 1;
-                    else if (driverLogin.getTripStatusDriver().equals("WAIT_FOR_TRIP"))
+                    else if (driverLogin.getTripStatusDriver().equals(TripStatusDriver.WAIT_FOR_TRIP))
                         return 2;
-                    else
-                        return 3;
                 }
             } else System.out.println("wrong username or password ");
         } else {
@@ -167,9 +165,9 @@ public class Manager<list> {
         if (passengerLogin != null) {
             if (passengerLogin.checkingPassword(nationalCode, password)) {
                 System.out.println(" Hi Dear  " + passengerLogin.getFirstName() + " " + passengerLogin.getLastName());
-                if (passengerLogin.getTripStatus().equals("ON_TRIP")) {
+                if (passengerLogin.getTripStatus().equals(TripStatusPassenger.ON_TRIP)) {
                     type = 1;
-                } else if (passengerLogin.getTripStatus().equals("ASK_TRIP"))
+                } else if (passengerLogin.getTripStatus().equals(TripStatusPassenger.ASK_TRIP))
                     type = 2;
             } else {
                 System.out.println("wrong username or password ");
@@ -283,17 +281,10 @@ public class Manager<list> {
     }
 
     public Driver findNearestDriver(Location origin) throws SQLException {
-        List<Driver> allDrivers = driverDao.display();
-        List<Driver> driverWaitForTrip = new ArrayList<>();
+
+        List<Driver> driverWaitForTrip = driverDao.FindDriverWaitForTrip();
         Driver nearestDriver = new Driver();
         double minDistance = calculateDistance(driverWaitForTrip.get(0).getLiveLocation(), origin);
-        for (Driver driver : allDrivers) {
-            if (driver.getTripStatusDriver().equals("WAIT_FOR_TRIP")) {
-                driverWaitForTrip.add(driver);
-
-
-            }
-        }
         for (Driver driver : driverWaitForTrip) {
             if (calculateDistance(driver.getLiveLocation(), origin) <= minDistance)
                 minDistance = calculateDistance(driver.getLiveLocation(), origin);
@@ -308,18 +299,21 @@ public class Manager<list> {
     }
 
     public boolean craeteTrip(Passenger passenger) throws SQLException {
+
         System.out.println("enter location of destination :\n width : ");
         String width = controlValidValue.getValidCoordinates();
         System.out.println("length : ");
         String length = controlValidValue.getValidCoordinates();
         Location destination = new Location(width, length);
+        Location origin = passenger.getLiveLocation();
         double cost = caluteCost(passenger.getLiveLocation(), destination);
         System.out.println("cost : " + cost + "\n Confirm trip : Y/N?");
         char confirm = controlValidValue.getValidChar();
         if (confirm == 'y') {
             Driver driver = findNearestDriver(passenger.getLiveLocation());
             Trip trip = new Trip(driver, passenger, cost, passenger.getLiveLocation(), destination);
-            int driverId = driverDao.findDriverId(driver);
+            locationDao.save(destination);
+            int driverId = driverDao.findIdDriverByNationalCode(driver.getNationalCode());
             int passengerId = passengerDao.findPassengerId(passenger);
             if (tripDao.save(trip) == 1) {
                 if (driverDao.updateTripStatus(TripStatusDriver.ON_TRIP, driverId) && passengerDao.updateTripStatus(TripStatusPassenger.ON_TRIP, passengerId)) {

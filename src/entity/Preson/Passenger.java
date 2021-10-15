@@ -18,6 +18,10 @@ public class Passenger<list> extends Person{
 
     }
 
+    public Passenger() {
+
+    }
+
     public void setWallet(double wallet) {
         this.wallet = wallet;
     }

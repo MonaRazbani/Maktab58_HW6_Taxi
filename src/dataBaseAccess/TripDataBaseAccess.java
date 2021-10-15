@@ -27,8 +27,10 @@ public class TripDataBaseAccess extends DataBaseAccess {
             Statement statement = getConnection().createStatement();
             int driverId = driverDao.findDriverId(trip.getDriver());
             int passengerId = passengerDao.findPassengerId(trip.getPassenger());
-            int i = statement.executeUpdate(String.format("INSERT INTO `trip` (`passenger` , `driver` , `trip_status`, `payment_status`, `cast` ) VALUES('%d','%d','%s','%s','%d')"
-                    , passengerId, driverId, trip.getTripStatus(), trip.getPaymentStatus(), trip.getCost()));
+            int destinationId = locationDao.FindLocationId(trip.getDestination());
+            int originId = locationDao.FindLocationId(trip.getOrigin());
+            int i = statement.executeUpdate(String.format("INSERT INTO `trip` (`passenger` , `driver` , `trip_status`, `payment_status`, `cast` , `origin` , `destination` ) VALUES('%d','%d','%s','%s','%f','%d','%d')"
+                    , passengerId, driverId, trip.getTripStatus(), trip.getPaymentStatus(), trip.getCost(),originId,destinationId ));
             return i;
 
         } else return -1;
@@ -48,8 +50,8 @@ public class TripDataBaseAccess extends DataBaseAccess {
                     Location origin = locationDao.findById(originId);
                     int destinationId = resultSet.getInt("destination");
                     Location destination = locationDao.findById(destinationId);
-                    TripStatus tripStatus = TripStatus.valueOf(resultSet.getString("tripstatus"));
-                    PaymentStatus paymentStatus = PaymentStatus.valueOf("payment_status");
+                    TripStatus tripStatus = TripStatus.valueOf(resultSet.getString("trip_status"));
+                    PaymentStatus paymentStatus = PaymentStatus.valueOf(resultSet.getString("payment_status"));
                     int cost = resultSet.getInt("cost");
                     Trip trip = new Trip(driver, passenger, cost, destination, origin, tripStatus, paymentStatus);
                     return trip;
@@ -91,7 +93,7 @@ public class TripDataBaseAccess extends DataBaseAccess {
             int passengerId = passengerDao.findPassengerId(trip.getPassenger());
             int originId = locationDao.FindLocationId(trip.getOrigin());
             int destinationId = locationDao.FindLocationId(trip.getDestination());
-            ResultSet resultSet = statement.executeQuery(String.format("select `id` from `trip` where `driver` = '%d' AND `passenger`= '%d' AND `origin` = '%d' AND `destination` = '%d' ", driverId, passengerId, originId, destinationId));
+            ResultSet resultSet = statement.executeQuery(String.format("select `idtrip` from `trip` where `driver` = '%d' AND `passenger`= '%d' AND `origin` = '%d' AND `destination` = '%d' ", driverId, passengerId, originId, destinationId));
             if (resultSet.next())
                 return resultSet.getInt(1);
         }
@@ -101,7 +103,7 @@ public class TripDataBaseAccess extends DataBaseAccess {
     public boolean updatePaymentStatus(PaymentStatus newPaymentStatus, int tripId ) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            int i = statement.executeUpdate(String.format("UPDATE `trip` SET `paymentStatus`  = '%s' WHERE `idtrip`  = '%d' ",newPaymentStatus,tripId));
+            int i = statement.executeUpdate(String.format("UPDATE `trip` SET `payment_status`  = '%s' WHERE `idtrip`  = '%d' ",newPaymentStatus,tripId));
             if (i==1 ){
                 return  true ;
             }
@@ -112,7 +114,7 @@ public class TripDataBaseAccess extends DataBaseAccess {
     public boolean updateTripStatus(TripStatus newTripStatus, int tripId ) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            int i = statement.executeUpdate(String.format("UPDATE `trip` SET `tripstatus`  = '%s' WHERE `idtrip`  = '%d' ",newTripStatus,tripId));
+            int i = statement.executeUpdate(String.format("UPDATE `trip` SET `trip_status`  = '%s' WHERE `idtrip`  = '%d' ",newTripStatus,tripId));
             if (i==1 ){
                 return  true ;
             }

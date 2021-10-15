@@ -40,12 +40,12 @@ public class PassengerDataBaseAccess extends DataBaseAccess{
 
         if (getConnection()!=null){
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(String.format("select * from `passenger` where `idpassenger` = '%d')",id));
+            ResultSet resultSet = statement.executeQuery(String.format("select * from `passenger` where `idpassenger` = '%d'",id));
             if (resultSet.next()) {
                 //idpassenger, first_name, last_name, username, password, national_code, gender, phone, wallet, tripstatus, location
                 String firstName = resultSet.getString("first_name");
                 String lastName = resultSet.getString("last_name");
-                String userName = resultSet.getString("user_name");
+                String userName = resultSet.getString("username");
                 String password = resultSet.getString("password");
                 String nationalCode = resultSet.getString("national_code");
                 Gender gender = Gender.valueOf(resultSet.getString("gender"));
@@ -113,7 +113,7 @@ public class PassengerDataBaseAccess extends DataBaseAccess{
     public boolean updateTripStatus (TripStatusPassenger newTripStatusPassenger, int  passengerId ) throws SQLException {
         if (getConnection() != null) {
             Statement statement = getConnection().createStatement();
-            int i = statement.executeUpdate(String.format("UPDATE `passenger` SET `triptatus`  = '%s' WHERE `idpassenger`  = '%d' ",newTripStatusPassenger,passengerId));
+            int i = statement.executeUpdate(String.format("UPDATE `passenger` SET `tripstatus`  = '%s' WHERE `idpassenger`  = '%d' ",newTripStatusPassenger,passengerId));
             if (i==1 ){
                 return  true ;
             }
@@ -127,7 +127,7 @@ public class PassengerDataBaseAccess extends DataBaseAccess{
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from `passenger`");
                 while (resultSet.next()) {
-                    for (Passenger passenger : passengerArrayList) {
+                        Passenger passenger =new Passenger();
                         passenger.setFirstName(resultSet.getString("first_name"));
                         passenger.setLastName(resultSet.getString("last_name"));
                         passenger.setUserName(resultSet.getString("user_name"));
@@ -142,7 +142,6 @@ public class PassengerDataBaseAccess extends DataBaseAccess{
                         Location location = locationDao.findById(locationId);
                         passenger.setLiveLocation(location);
                         passengerArrayList.add(passenger);
-                    }
                 }
                 return passengerArrayList;
             }
