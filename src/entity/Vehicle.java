@@ -5,7 +5,6 @@ import entity.enums.Color;
 import entity.enums.TypeOfVehicle;
 
 public class Vehicle {
-    private int id ;
     private String licensePlate;
     private TypeOfVehicle typeOfVehicle;
     private CarModel model ;
@@ -14,16 +13,12 @@ public class Vehicle {
     public Vehicle() {
     }
 
-    public Vehicle(int id , String licensePlate, TypeOfVehicle typeOfVehicle, CarModel model, Color color) {
-        this.id =id;
+    public Vehicle(String licensePlate, TypeOfVehicle typeOfVehicle, CarModel model, Color color) {
+
         this.licensePlate = licensePlate;
         this.typeOfVehicle = typeOfVehicle;
         this.model = model;
         this.color = color;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getLicensePlate() {
@@ -40,10 +35,6 @@ public class Vehicle {
 
     public Color getColor() {
         return color;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setLicensePlate(String licensePlate) {
